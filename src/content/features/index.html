@@ -1,0 +1,144 @@
+---
+extends: base.j2
+default_block: main
+title: >
+    Shed: Features
+description: The features of the Shed programming language
+---
+
+<h1>Features</h1>
+
+<h2>What Shed has</h2>
+
+<h3>Functions</h3>
+
+<h3>Interfaces and classes</h3>
+
+<h3>Type parameters</h3>
+
+<h3>Variadic type parameters</h3>
+
+<h3>Covariant and contravariant type parameters</h3>
+
+<h3>Sum types</h3>
+
+<h3>Lambdas</h3>
+
+<h3>Compilation to JavaScript</h3>
+
+<h2>What Shed won't have</h2>
+
+<p>A language is defined as much by the features it leaves out as the features
+it includes. We explicitly avoid certain features found in other languages, usually
+because they introduce extra complexity at little benefit, or they increase
+ambiguity and reduce clarity in the language.</p>
+
+<h3>Inheritance</h3>
+
+<p>We believe that inheritance leads to complex code and unnecessarily large classes.
+Instead of inheriting from a class and overriding specific methods to modify
+behaviour, we use composition to encourage the creation of smaller classes designed to solve
+smaller problems. These smaller classes can then be more easily reused and tested in isolation
+from the larger problem.</p>
+
+<h3>Function overloading</h3>
+
+<p>We believe allowing more than one function with the same name to exist in the
+same scope introduces ambiguity. To determine which instance of an overloaded
+function is actually being called, you have to find an instance with a type
+signature that corresponds to the arguments the function is being called with.
+Furthermore, if there's more than one instance with an appropriate
+type signature, the language must then decide which instance is the most
+appropriate. By disallowing function overloading, we ensure that the function
+being called is unambiguous.</p>
+
+<h3>Nulls</h3>
+
+<p>Allowing values to be null weakens the type system, since it is rarely
+completely obvious whether a value could potentially be null or not during
+the execution of a program. This can lead to dead code in the form of unnecessary
+null checks, or broken code by incorrectly assuming a value cannot be null.
+By disallowing nulls, this ambiguity is removed.</p>
+
+<p>In the cases where a potentially null value is desirable, replacing nulls with
+appropriate classes, such as <code>Option</code>, allows
+cleaner code. For instance, with nulls:</p>
+
+<pre>if name == null {
+    return null;
+} else {
+    return trim(name);
+}</pre>
+
+<p>Using <code>Option</code>:</p>
+
+<pre>return name.map(trim);</pre>
+
+<h3>Properties</h3>
+
+<p>A property access looks the same as a data field access,
+except that getting or setting the field actually results in a method
+being called. For instance, in C#:</p>
+
+<pre>public class Person {
+    private int m_Age;
+    public int Age {
+        get { return m_Age; }
+        set { m_Age = value > 0 ? value : 0; }
+    }
+}
+
+var person = new Person();
+person.Age = -42;
+var age = person.Age;
+// age == 0
+</pre>
+
+<p>We believe this overloads the dot operator, making member accesses ambiguous.
+By introducing properties, a member access could potentially be either a simple
+field access that cannot fail (in the absence of nulls), or it could
+be hiding a method access that can potentially do anything.</p>
+
+<h3>Extension methods</h3>
+
+<p>Extension methods allow functions defined outside of an interface or class
+to be called as though they were methods. For instance, to define an extension
+method in C#, we define a static method with the first argument prepended
+with <code>this</code>:</p>
+
+<pre>public static string Truncate(this string str, int maxLength) {
+    return str.Substring(0, Math.Min(str.Length, maxLength));
+}</pre>
+
+<p>We can then call <code>Truncate</code> as though it was a member on
+<code>string</code>:</p>
+
+<pre>var truncated = "Great Scott!".Truncate(5);
+// truncated == "Great"</pre>
+
+<p>We believe this overloads the dot operator, since it can now either lookup
+a member on the type, or call a function that happens to be in scope that has
+been declared as an extension method. If the reordering of the object and
+the method name is desirable, we believe this can be achieved without
+rendering the dot operator ambiguous, for instance by using a different symbol.
+In fact, using a distinct symbol removes the need to explicitly mark the function
+as an extension method. For instance, using <code>|&gt;</code> (known as the
+pipeline operator in F#):</p>
+
+<pre>public static string Truncate(string str, int maxLength) {
+    return str.Substring(0, Math.Min(str.Length, maxLength));
+}
+
+"Great Scott!" |> Truncate(5)</pre>
+
+<p>Note that <code>Truncate</code> is now just an ordinary function.</p>
+
+<h3>Partial classes</h3>
+
+<p>We tend to find splitting the definition of a class over multiple files
+to be confusing. In the situations where you might use a partial class,
+we believe that creating two (or more) separate classes makes the code clearer.</p>
+
+<h2>Maybes</h2>
+
+<h3>Do notation</h3>

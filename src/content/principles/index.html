@@ -1,0 +1,26 @@
+---
+extends: base.j2
+default_block: main
+title: >
+    Shed: Principles
+description: Principles used in designing the Shed programming langauge
+---
+
+<h1>Principles</h1>
+
+<h2>Optimise for the reader</h2>
+
+<p>Wherever possible, optimise for the reader of the code, not the writer.
+If code is confusing or ambiguous, it can be misread leading to the
+introduction of bugs. Alternatively, the reader may just give up
+and write the same functionality again elsewhere, with a slightly different
+set of bugs and semantics.</p>
+
+<p>Note that having readable code is different from having code that looks nice.
+The reader should be able to understand the semantics of the code so that they
+can then modify it.</p>
+
+<h2>Explicit declarations</h2>
+
+<p>Introducing a new variable into the current scope must always explicitly
+state the name for the new variable.</p>
